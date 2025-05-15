@@ -32,3 +32,5 @@ cucumber-report.html
 *.bak
 *.old
 *.orig
+
+resources/

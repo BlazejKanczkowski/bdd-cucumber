@@ -1,0 +1,34 @@
+*.class
+*.log
+*.swp
+.DS_Store
+Thumbs.db
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+/target/
+/out/
+/build/
+
+.mvn/
+
+cucumber-report.html
+/test-output/
+/surefire-reports/
+/reports/
+/*.json
+*.txt
+
+.env
+*.local
+*.secret
+
+*.tmp
+*.bak
+*.old
+*.orig

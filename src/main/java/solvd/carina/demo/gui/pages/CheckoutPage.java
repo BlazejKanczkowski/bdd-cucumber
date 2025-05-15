@@ -35,5 +35,4 @@ public class CheckoutPage extends BasePage {
     public void finishOrder() {
         finishButton.click();
     }
-
 }

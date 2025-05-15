@@ -1,6 +1,7 @@
 package solvd.carina.demo.gui.pages;
 
 import com.zebrunner.carina.webdriver.decorator.ExtendedWebElement;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.FindBy;
 import solvd.carina.demo.gui.components.ProductListItemComponent;
@@ -30,5 +31,23 @@ public class InventoryPage extends BasePage {
                 .filter(item -> item.getItemName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Product not found: " + name));
+    }
+
+    public void addToCart(String productName) {
+        if (productName == null || productName.trim().isEmpty()) {
+            throw new IllegalArgumentException("Product name is null or empty");
+        }
+
+        String normalizedName = productName.toLowerCase().replace(" ", "-");
+        String selector = String.format("[data-test='add-to-cart-%s']", normalizedName);
+
+        ExtendedWebElement addToCartButton = new ExtendedWebElement(
+                getDriver().findElement(By.cssSelector(selector)), selector);
+
+        if (addToCartButton.isElementPresent()) {
+            addToCartButton.click();
+        } else {
+            throw new RuntimeException("Add to cart button not found for product: " + productName);
+        }
     }
 }

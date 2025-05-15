@@ -8,5 +8,4 @@ public class BasePage extends AbstractPage {
     public BasePage(WebDriver driver) {
         super(driver);
     }
-
 }

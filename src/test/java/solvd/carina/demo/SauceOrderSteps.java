@@ -15,6 +15,8 @@ import solvd.carina.demo.gui.pages.*;
 
 import java.util.List;
 
+import static solvd.carina.demo.constants.CheckoutConstants.*;
+
 
 public class SauceOrderSteps extends AbstractTest {
 
@@ -45,13 +47,15 @@ public class SauceOrderSteps extends AbstractTest {
 
         InventoryPage inventoryPage = new InventoryPage(getDriver());
 
-        for (Order order : orders) {
-            if (order.getProductName() != null && !order.getProductName().isEmpty()) {
-                inventoryPage.getProductByName(order.getProductName()).addToCart(order.getProductName());
-                logger.info("Added product {} to cart", order.getProductName());
-            } else {
-                logger.warn("Product name is null or empty for order id: {}", order.getId());
-            }
+        List<Order> validOrders = orders.stream()
+                .filter(o -> o.getProductName() != null && !o.getProductName().trim().isEmpty())
+                .toList();
+
+        Assert.assertFalse(validOrders.isEmpty(), "No valid product names found for user: " + user.getUsername());
+
+        for (Order order : validOrders) {
+            inventoryPage.addToCart(order.getProductName());
+            logger.info("Added product {} to cart", order.getProductName());
         }
 
         inventoryPage.clickCartIcon();
@@ -65,7 +69,7 @@ public class SauceOrderSteps extends AbstractTest {
         logger.info("Checkout process started.");
 
         CheckoutPage checkoutPage = new CheckoutPage(getDriver());
-        checkoutPage.fillForm("John", "Doe", "12345");
+        checkoutPage.fillForm(FIRST_NAME, LAST_NAME, ZIP_CODE);
         checkoutPage.finishOrder();
         logger.info("Order completed successfully.");
     }

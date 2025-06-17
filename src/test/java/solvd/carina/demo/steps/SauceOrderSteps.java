@@ -1,4 +1,4 @@
-package solvd.carina.demo;
+package solvd.carina.demo.steps;
 
 import com.zebrunner.carina.core.AbstractTest;
 import org.apache.ibatis.session.SqlSession;
@@ -17,7 +17,6 @@ import java.util.List;
 
 import static solvd.carina.demo.constants.CheckoutConstants.*;
 
-
 public class SauceOrderSteps extends AbstractTest {
 
     private static final Logger logger = LoggerFactory.getLogger(SauceOrderSteps.class);
@@ -25,21 +24,23 @@ public class SauceOrderSteps extends AbstractTest {
     private User user;
     private List<Order> orders;
 
-    @Given("user logs in with username {string}")
-    public void user_logs_in_with_username(String username) {
+    @Given("user {string} logs in")
+    public void userLogsIn(String username) {
         try (SqlSession session = MyBaitsUtil.getSession()) {
             UserMapper userMapper = session.getMapper(UserMapper.class);
             user = userMapper.getUserByUsername(username);
         }
 
+        Assert.assertNotNull(user, "User not found in DB: " + username);
+
         LoginPage loginPage = new LoginPage(getDriver());
         loginPage.open();
-        loginPage.login(user.getUsername(), user.getPassword());
+        loginPage.login(user.getUsername(), "secret_sauce"); // zakładamy wspólne hasło
         logger.info("User {} logged in successfully", user.getUsername());
     }
 
-    @And("orders his products")
-    public void orders_his_products() {
+    @And("orders all his products from the database")
+    public void ordersAllProductsFromDatabase() {
         try (SqlSession session = MyBaitsUtil.getSession()) {
             OrderMapper orderMapper = session.getMapper(OrderMapper.class);
             orders = orderMapper.getOrdersByUserId(user.getId());
@@ -63,19 +64,26 @@ public class SauceOrderSteps extends AbstractTest {
     }
 
     @And("completes the checkout")
-    public void completes_the_checkout() {
-        CartPage cartPage = new CartPage(getDriver());
+    public void completesTheCheckout() {
+        logger.info("Starting checkout process...");
+
+        InventoryPage inventoryPage = new InventoryPage(getDriver());
+        CartPage cartPage = inventoryPage.clickCartIcon();
+        logger.info("Clicked on cart icon.");
+
         cartPage.clickCheckout();
-        logger.info("Checkout process started.");
+        logger.info("Clicked on Checkout button.");
 
         CheckoutPage checkoutPage = new CheckoutPage(getDriver());
         checkoutPage.fillForm(FIRST_NAME, LAST_NAME, ZIP_CODE);
+        logger.info("Filled out checkout form.");
+
         checkoutPage.finishOrder();
         logger.info("Order completed successfully.");
     }
 
     @Then("the order should be completed successfully")
-    public void the_order_should_be_completed_successfully() {
+    public void theOrderShouldBeCompletedSuccessfully() {
         CheckoutCompletePage completePage = new CheckoutCompletePage(getDriver());
         Assert.assertTrue(completePage.isThankYouMessageVisible(), "Order confirmation is not visible!");
         logger.info("Order confirmation is visible, order completed successfully.");

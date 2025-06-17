@@ -1,4 +1,4 @@
-package solvd.carina.demo;
+package solvd.carina.demo.runner;
 
 
 import io.cucumber.junit.Cucumber;

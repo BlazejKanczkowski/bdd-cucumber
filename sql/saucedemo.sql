@@ -23,7 +23,4 @@ INSERT INTO orders (user_id, product_name, price) VALUES
 (1, 'Sauce Labs Backpack', 29.99),
 (1, 'Sauce Labs Bike Light', 9.99),
 (1, 'Sauce Labs Bolt T-Shirt', 15.99),
-(2, 'Sauce Labs Onesie', 7.99),
-(3, 'Test.allTheThings() T-Shirt', 15.99),
-(3, 'Sauce Labs Backpack', 29.99),
-(4, 'Sauce Labs Fleece Jacket', 49.99);
+(3, 'Sauce Labs Backpack', 15.99),
